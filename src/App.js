@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,7 +12,7 @@ const App = () => {
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -44,9 +45,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setNotificationMessage( {message: 'Wrong credentials', type: 'error'})
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotificationMessage(null)
       }, 5000)
     }
   }
@@ -86,7 +87,7 @@ const App = () => {
       <h2>blogs</h2>
 
       <p>{user.name} logged-in <button onClick={logoutUser}>logout</button></p>
-      <BlogForm></BlogForm>
+      {blogForm()}
 
 
       {blogs.map(blog =>
@@ -95,7 +96,7 @@ const App = () => {
     </div>
   )
 
-  const BlogForm = () => (
+  const blogForm = () => (
     <div>
       <h2>create new</h2>
 
@@ -133,7 +134,7 @@ const App = () => {
     setNewUrl(event.target.value)
   }
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
     event.preventDefault()
     const blogObject = {
       title: newTitle,
@@ -141,18 +142,29 @@ const App = () => {
       url: newUrl,
     }
 
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+    try {
+       const returnedBlog = await blogService.create(blogObject)
+       setBlogs(blogs.concat(returnedBlog))
         setNewTitle('')
         setNewAuthor('')
         setNewUrl('')
-      })
+        setNotificationMessage( {message: `Added ${returnedBlog.title} to blogs`, type: 'success'})
+        setTimeout(() => {
+        setNotificationMessage(null)
+        }, 5000)
+    } catch(exception) {
+      console.log(exception)
+      setNotificationMessage( {message: `${exception.response.data.error}`, type: 'error'})
+        setTimeout(() => {
+        setNotificationMessage(null)
+        }, 5000)
+    }
   }
 
   return (
     <div>
+      {notificationMessage === null ? "":  <Notification message={notificationMessage.message} type={notificationMessage.type} />}
+     
       {user === null ?
       loginForm() : blogList() }
     </div>

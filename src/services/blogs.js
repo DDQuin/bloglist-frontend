@@ -26,7 +26,7 @@ const deleteBlog = async (id) => {
     headers: { Authorization: token },
   }
   const response = await axios.delete(`${ baseUrl }/${id}`, config)
-  return response.data;
+  return response.data
 }
 
 const update = async (id, newObject) => {

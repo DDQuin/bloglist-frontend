@@ -85,6 +85,23 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+      setNotificationMessage( {message: `Deleted blog `, type: 'success'})
+        setTimeout(() => {
+        setNotificationMessage(null)
+        }, 5000)
+    } catch(exception) {
+      console.log(exception)
+      setNotificationMessage( {message: `${exception.response.data.error}`, type: 'error'})
+        setTimeout(() => {
+        setNotificationMessage(null)
+        }, 5000)
+    }
+  }
+
   const blogList = () => {
     const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
     return (
@@ -97,7 +114,7 @@ const App = () => {
        </Togglable>
       }
       {sortedBlogs.map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike} />
+        <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} isOwner={user.username === blog.user.username}/>
       )}
     </div>
   )

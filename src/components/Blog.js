@@ -1,5 +1,5 @@
 import { useState } from 'react'
-const Blog = ({blog}) => {
+const Blog = ({blog, addLike}) => {
   const [displayed, setDisplay] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -7,6 +7,15 @@ const Blog = ({blog}) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5
+  }
+
+  const handleLike = () => {
+    addLike(blog.id.toString(), {
+      tite: blog.title,
+      url: blog.url,
+      author: blog.author,
+      likes: blog.likes + 1,
+    })
   }
   if (!displayed) {
     return (
@@ -24,7 +33,7 @@ const Blog = ({blog}) => {
         <br></br>
         {blog.url}
         <br></br>
-        likes {blog.likes} <button>like</button>
+        likes {blog.likes} <button onClick={handleLike}>like</button>
         <br></br>
         {blog.author}
       </div>

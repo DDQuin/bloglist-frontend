@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -87,7 +88,17 @@ const App = () => {
       <h2>blogs</h2>
 
       <p>{user.name} logged-in <button onClick={logoutUser}>logout</button></p>
-      {blogForm()}
+      {<Togglable buttonLabel='new blog'>
+        <BlogForm 
+        handleTitleChange={handleTitleChange} 
+        handleAuthorChange={handleAuthorChange} 
+        handleUrlChange={handleUrlChange} 
+        addBlog={addBlog} 
+        newTitle={newTitle}
+        newAuthor={newAuthor}
+        newUrl={newUrl}
+      />
+      </Togglable>}
 
 
       {blogs.map(blog =>
@@ -96,31 +107,7 @@ const App = () => {
     </div>
   )
 
-  const blogForm = () => (
-    <div>
-      <h2>create new</h2>
-
-      <form onSubmit={addBlog}>
-      title:<input
-        value={newTitle}
-        onChange={handleTitleChange}
-      />
-      <br></br>
-      author:<input
-        value={newAuthor}
-        onChange={handleAuthorChange}
-      />
-      <br></br>
-      url:<input
-        value={newUrl}
-        onChange={handleUrlChange}
-      />
-      <br></br>
-      <button type="submit">create</button>
-
-      </form>
-    </div>
-  )
+  
 
   const handleTitleChange = (event) => {
     setNewTitle(event.target.value)
@@ -170,5 +157,31 @@ const App = () => {
     </div>
   )
 }
+
+const BlogForm = ({handleTitleChange, handleAuthorChange, handleUrlChange, addBlog, newTitle, newAuthor, newUrl}) => (
+  <div>
+    <h2>create new</h2>
+
+    <form onSubmit={addBlog}>
+    title:<input
+      value={newTitle}
+      onChange={handleTitleChange}
+    />
+    <br></br>
+    author:<input
+      value={newAuthor}
+      onChange={handleAuthorChange}
+    />
+    <br></br>
+    url:<input
+      value={newUrl}
+      onChange={handleUrlChange}
+    />
+    <br></br>
+    <button type="submit">create</button>
+
+    </form>
+  </div>
+)
 
 export default App

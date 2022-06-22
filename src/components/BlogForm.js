@@ -39,21 +39,24 @@ const BlogForm = ({ createBlog }) => {
           value={newTitle}
           onChange={handleTitleChange}
           data-testid="title"
+          id='title'
         />
         <br></br>
     author:<input
           value={newAuthor}
           onChange={handleAuthorChange}
           data-testid="author"
+          id='author'
         />
         <br></br>
     url:<input
           value={newUrl}
           onChange={handleUrlChange}
           data-testid="url"
+          id='url'
         />
         <br></br>
-        <button data-testid="create" type="submit">create</button>
+        <button data-testid="create" type="submit" id='create'>create</button>
 
       </form>
     </div>

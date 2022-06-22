@@ -9,14 +9,6 @@ const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
     marginBottom: 5
   }
 
-  const handleLike = () => {
-    addLike(blog.id.toString(), {
-      tite: blog.title,
-      url: blog.url,
-      author: blog.author,
-      likes: blog.likes + 1,
-    })
-  }
 
   const handleDelete = () => {
     console.log(blog)
@@ -40,7 +32,7 @@ const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
           <br></br>
           {blog.url}
           <br></br>
-        likes {blog.likes} <button onClick={handleLike}>like</button>
+        likes {blog.likes} <button data-testid="like" onClick={addLike}>like</button>
           <br></br>
           {blog.author}
           <br></br>

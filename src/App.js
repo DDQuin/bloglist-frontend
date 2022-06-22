@@ -68,8 +68,15 @@ const App = () => {
     }
   }
 
-  const addLike = async (id, blogObject) => {
+  const addLike = async (blogAdd) => {
     try {
+      const id = blogAdd.id.toString()
+      const blogObject = {
+        tite: blogAdd.title,
+        url: blogAdd.url,
+        author: blogAdd.author,
+        likes: blogAdd.likes + 1,
+      }
       const returnedBlog = await blogService.update(id, blogObject)
       setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
       setNotificationMessage( { message: `Liked ${returnedBlog.title} `, type: 'success' })
@@ -114,7 +121,7 @@ const App = () => {
         </Togglable>
         }
         {sortedBlogs.map(blog =>
-          <Blog key={blog.id} blog={blog} addLike={addLike} deleteBlog={deleteBlog} isOwner={user.username === blog.user.username}/>
+          <Blog key={blog.id} blog={blog} addLike={() => addLike(blog)} deleteBlog={deleteBlog} isOwner={user.username === blog.user.username}/>
         )}
       </div>
     )

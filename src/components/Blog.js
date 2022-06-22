@@ -28,14 +28,14 @@ const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
     return (
       <div style={blogStyle}>
         <div data-testid="blog-simple">
-          {blog.title} {blog.author} <button onClick={() => setDisplay(true)}>view</button>
+          {blog.title} {blog.author} <button data-testid="show" onClick={() => setDisplay(true)}>view</button>
         </div>
       </div>
     )
   } else {
     return (
       <div style={blogStyle}>
-        <div>
+        <div data-testid="blog-detail">
           {blog.title}  <button onClick={() => setDisplay(false)}>hide</button>
           <br></br>
           {blog.url}

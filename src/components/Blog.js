@@ -27,8 +27,8 @@ const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
   if (!displayed) {
     return (
       <div style={blogStyle}>
-        <div>
-          {blog.title} <button onClick={() => setDisplay(true)}>view</button>
+        <div data-testid="blog-simple">
+          {blog.title} {blog.author} <button onClick={() => setDisplay(true)}>view</button>
         </div>
       </div>
     )

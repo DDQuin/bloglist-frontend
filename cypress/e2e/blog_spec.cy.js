@@ -44,7 +44,7 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
       cy.login({ username: 'admin', password: 'root' })
     })
@@ -79,6 +79,31 @@ describe('Blog app', function() {
       cy.login({ username: 'normal', password: 'cool' })
       cy.contains('view').click()
       cy.get('#remove').should('not.exist')
+    })
+
+    it('Blog ordered by likes', function() {
+      cy.createBlog({title: 'Coolblog1', author: 'Marc', url: 'google.com'})
+      cy.createBlog({title: 'Coolblog2', author: 'Marc', url: 'google.com'})
+      cy.createBlog({title: 'Coolblog3', author: 'Marc', url: 'google.com'})
+      // open all 3 blogs for liking
+      cy.get('[data="blog"]').eq(0).contains('view').click()
+      cy.get('[data="blog"]').eq(1).contains('view').click()
+      cy.get('[data="blog"]').eq(2).contains('view').click()
+
+      // like Coolblog 2, two times
+      cy.get('[data="blog"]').eq(1).contains('like').click()
+      cy.wait(500)
+      cy.get('[data="blog"]').eq(1).contains('like').click()
+      cy.wait(500)
+
+      // like Coolblog 1, one time
+      cy.get('[data="blog"]').eq(0).contains('like').click()
+      cy.wait(500)
+
+      // order should be coolblog2, coolblog1 and coolblog3
+      cy.get('[data="blog"]').eq(0).contains('Coolblog2')
+      cy.get('[data="blog"]').eq(1).contains('Coolblog1')
+      cy.get('[data="blog"]').eq(2).contains('Coolblog3')
     })
   })
 

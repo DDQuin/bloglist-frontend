@@ -8,7 +8,12 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import { createBlog, initializeBlogs } from './reducers/blogReducer'
+import {
+    createBlog,
+    initializeBlogs,
+    likeBlog,
+    deleteBlogBack,
+} from './reducers/blogReducer'
 
 const App = () => {
     const dispatch = useDispatch()
@@ -89,20 +94,11 @@ const App = () => {
     const addLike = async (blogAdd) => {
         try {
             const id = blogAdd.id.toString()
-            const blogObject = {
-                tite: blogAdd.title,
-                url: blogAdd.url,
-                author: blogAdd.author,
-                likes: blogAdd.likes + 1,
-            }
-            const returnedBlog = await blogService.update(id, blogObject)
-            setBlogs(
-                blogs.map((blog) => (blog.id !== id ? blog : returnedBlog))
-            )
+            dispatch(likeBlog(id, blogAdd))
             dispatch(
                 setNotification(
                     {
-                        message: `Liked ${returnedBlog.title} `,
+                        message: `Liked ${blogAdd.title} `,
                         type: 'success',
                     },
                     5
@@ -124,8 +120,7 @@ const App = () => {
 
     const deleteBlog = async (id) => {
         try {
-            await blogService.deleteBlog(id)
-            setBlogs(blogs.filter((blog) => blog.id !== id))
+            dispatch(deleteBlogBack(id))
             dispatch(
                 setNotification(
                     {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -8,16 +8,21 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import { createBlog, initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
     const dispatch = useDispatch()
-    const [blogs, setBlogs] = useState([])
+    useEffect(() => {
+        dispatch(initializeBlogs())
+    }, [dispatch])
+    //const [blogs, setBlogs] = useState([])
+    const blogs = useSelector((state) => state.blogs)
     const [user, setUser] = useState(null)
     const blogFormRef = useRef()
 
-    useEffect(() => {
-        blogService.getAll().then((blogs) => setBlogs(blogs))
-    }, [])
+    // useEffect(() => {
+    //     blogService.getAll().then((blogs) => setBlogs(blogs))
+    // }, [])
 
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -58,8 +63,7 @@ const App = () => {
     const addBlog = async (blogObject) => {
         try {
             blogFormRef.current.toggleVisibility()
-            const returnedBlog = await blogService.create(blogObject)
-            setBlogs(blogs.concat(returnedBlog))
+            dispatch(createBlog(blogObject))
             dispatch(
                 setNotification(
                     {
@@ -146,7 +150,7 @@ const App = () => {
     }
 
     const blogList = () => {
-        const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+        const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
         return (
             <div>
                 <h2>blogs</h2>

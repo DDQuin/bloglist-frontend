@@ -6,10 +6,11 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import UserList from './components/UserList'
+import User from './components/User'
 import {
     createBlog,
     initializeBlogs,
-    likeBlog,
     deleteBlogBack,
 } from './reducers/blogReducer'
 import {
@@ -17,152 +18,57 @@ import {
     loginUser,
     logoutUserBack,
 } from './reducers/userReducer'
+import BlogList from './components/BlogList'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(initializeBlogs())
         dispatch(initializeUser())
+        dispatch(initializeUsers())
     }, [dispatch])
     const blogs = useSelector((state) => state.blogs)
     const user = useSelector((state) => state.user)
-    const blogFormRef = useRef()
+    const users = useSelector((state) => state.users)
 
-    const handleLogin = async (userObject) => {
-        try {
-            dispatch(loginUser(userObject))
-        } catch (exception) {
-            dispatch(
-                setNotification(
-                    {
-                        message: 'Wrong credentials',
-                        type: 'error',
-                    },
-                    5
-                )
-            )
-        }
-    }
-
-    const logoutUser = async () => {
-        dispatch(logoutUserBack())
-    }
-
-    const addBlog = async (blogObject) => {
-        try {
-            blogFormRef.current.toggleVisibility()
-            dispatch(createBlog(blogObject))
-            dispatch(
-                setNotification(
-                    {
-                        message: `Added ${returnedBlog.title} to blogs`,
-                        type: 'success',
-                    },
-                    5
-                )
-            )
-        } catch (exception) {
-            dispatch(
-                setNotification(
-                    {
-                        message: `${exception.response.data.error}`,
-                        type: 'error',
-                    },
-                    5
-                )
-            )
-        }
-    }
-
-    const addLike = async (blogAdd) => {
-        try {
-            const id = blogAdd.id.toString()
-            dispatch(likeBlog(id, blogAdd))
-            dispatch(
-                setNotification(
-                    {
-                        message: `Liked ${blogAdd.title} `,
-                        type: 'success',
-                    },
-                    5
-                )
-            )
-        } catch (exception) {
-            console.log(exception)
-            dispatch(
-                setNotification(
-                    {
-                        message: `${exception.response.data.error}`,
-                        type: 'error',
-                    },
-                    5
-                )
-            )
-        }
-    }
-
-    const deleteBlog = async (id) => {
-        try {
-            dispatch(deleteBlogBack(id))
-            dispatch(
-                setNotification(
-                    {
-                        message: 'Deleted blog ',
-                        type: 'success',
-                    },
-                    5
-                )
-            )
-        } catch (exception) {
-            console.log(exception)
-            dispatch(
-                setNotification(
-                    {
-                        message: `${exception.response.data.error}`,
-                        type: 'error',
-                    },
-                    5
-                )
-            )
-        }
-    }
-
-    const blogList = () => {
-        const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+    if (user === null)
         return (
             <div>
-                <h2>blogs</h2>
-
-                <p>
-                    {user.name} logged-in{' '}
-                    <button onClick={logoutUser}>logout</button>
-                </p>
-                {
-                    <Togglable
-                        buttonLabel="new blog"
-                        ref={blogFormRef}
-                        id="blog-toggle"
-                    >
-                        <BlogForm createBlog={addBlog} />
-                    </Togglable>
-                }
-                {sortedBlogs.map((blog) => (
-                    <Blog
-                        key={blog.id}
-                        blog={blog}
-                        addLike={() => addLike(blog)}
-                        deleteBlog={deleteBlog}
-                        isOwner={user && blog.user.username === user.username}
-                    />
-                ))}
+                <Notification />
+                <LoginForm />
             </div>
         )
-    }
 
     return (
         <div>
             <Notification />
-            {user === null ? <LoginForm login={handleLogin} /> : blogList()}
+            <BlogHeader user={user} />
+            <Routes>
+                <Route
+                    path="/"
+                    element={<BlogList blogs={blogs} user={user} />}
+                />
+                <Route path="/users" element={<UserList users={users} />} />
+                <Route path="/users/:id" element={<User users={users} />} />
+            </Routes>
+        </div>
+    )
+}
+
+const BlogHeader = (user) => {
+    const dispatch = useDispatch()
+    return (
+        <div>
+            <h2>blogs</h2>
+
+            <p>
+                {user.user.name} logged-in{' '}
+                <button onClick={() => dispatch(logoutUserBack())}>
+                    logout
+                </button>
+            </p>
         </div>
     )
 }

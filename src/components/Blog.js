@@ -1,5 +1,14 @@
 import { useState } from 'react'
-const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
+import { useDispatch, useSelector } from 'react-redux'
+import {
+    createBlog,
+    initializeBlogs,
+    likeBlog,
+    deleteBlogBack,
+} from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+const Blog = ({ blog, isOwner }) => {
+    const dispatch = useDispatch()
     const [displayed, setDisplay] = useState(false)
     const blogStyle = {
         paddingTop: 10,
@@ -7,6 +16,59 @@ const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
         border: 'solid',
         borderWidth: 1,
         marginBottom: 5,
+    }
+
+    const deleteBlog = async (id) => {
+        try {
+            dispatch(deleteBlogBack(id))
+            dispatch(
+                setNotification(
+                    {
+                        message: 'Deleted blog ',
+                        type: 'success',
+                    },
+                    5
+                )
+            )
+        } catch (exception) {
+            console.log(exception)
+            dispatch(
+                setNotification(
+                    {
+                        message: `${exception.response.data.error}`,
+                        type: 'error',
+                    },
+                    5
+                )
+            )
+        }
+    }
+
+    const addLike = async (blogAdd) => {
+        try {
+            const id = blogAdd.id.toString()
+            dispatch(likeBlog(id, blogAdd))
+            dispatch(
+                setNotification(
+                    {
+                        message: `Liked ${blogAdd.title} `,
+                        type: 'success',
+                    },
+                    5
+                )
+            )
+        } catch (exception) {
+            console.log(exception)
+            dispatch(
+                setNotification(
+                    {
+                        message: `${exception.response.data.error}`,
+                        type: 'error',
+                    },
+                    5
+                )
+            )
+        }
     }
 
     const handleDelete = () => {
@@ -36,7 +98,7 @@ const Blog = ({ blog, addLike, deleteBlog, isOwner }) => {
                     {blog.url}
                     <br></br>
                     likes {blog.likes}{' '}
-                    <button data-testid="like" onClick={addLike}>
+                    <button data-testid="like" onClick={() => addLike(blog)}>
                         like
                     </button>
                     <br></br>

@@ -34,7 +34,7 @@ const App = () => {
     const user = useSelector((state) => state.user)
     const users = useSelector((state) => state.users)
 
-    if (user === null)
+    if (!user)
         return (
             <div>
                 <Notification />
@@ -45,7 +45,7 @@ const App = () => {
     return (
         <div>
             <Notification />
-            <BlogHeader user={user} />
+            <NavigationBar user={user} />
             <Routes>
                 <Route
                     path="/"
@@ -59,18 +59,25 @@ const App = () => {
     )
 }
 
-const BlogHeader = (user) => {
+const NavigationBar = ({ user }) => {
     const dispatch = useDispatch()
+    const navStyle = {
+        paddingTop: 10,
+        paddingLeft: 2,
+        backgroundColor: 'silver',
+        borderWidth: 1,
+        marginBottom: 5,
+    }
     return (
         <div>
-            <h2>blogs</h2>
-
-            <p>
-                {user.user.name} logged-in{' '}
+            <div style={navStyle}>
+                <Link to={`/`}>blogs</Link> <Link to={`/users/`}>users</Link>{' '}
+                {user.name} logged-in{' '}
                 <button onClick={() => dispatch(logoutUserBack())}>
                     logout
                 </button>
-            </p>
+            </div>
+            <h2>blogs</h2>
         </div>
     )
 }

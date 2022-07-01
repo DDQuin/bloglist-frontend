@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import BlogCard from './components/BlogCard'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -52,6 +53,7 @@ const App = () => {
                 />
                 <Route path="/users" element={<UserList users={users} />} />
                 <Route path="/users/:id" element={<User users={users} />} />
+                <Route path="/blogs/:id" element={<Blog blogs={blogs} />} />
             </Routes>
         </div>
     )

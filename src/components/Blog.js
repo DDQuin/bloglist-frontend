@@ -1,3 +1,11 @@
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    useParams,
+    useNavigate,
+} from 'react-router-dom'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -7,41 +15,13 @@ import {
     deleteBlogBack,
 } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-const Blog = ({ blog, isOwner }) => {
-    const dispatch = useDispatch()
-    const [displayed, setDisplay] = useState(false)
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5,
-    }
 
-    const deleteBlog = async (id) => {
-        try {
-            dispatch(deleteBlogBack(id))
-            dispatch(
-                setNotification(
-                    {
-                        message: 'Deleted blog ',
-                        type: 'success',
-                    },
-                    5
-                )
-            )
-        } catch (exception) {
-            console.log(exception)
-            dispatch(
-                setNotification(
-                    {
-                        message: `${exception.response.data.error}`,
-                        type: 'error',
-                    },
-                    5
-                )
-            )
-        }
+const Blog = ({ blogs }) => {
+    const dispatch = useDispatch()
+    const id = useParams().id
+    const blog = blogs.find((b) => b.id === id)
+    if (!blog) {
+        return <div>Blog not found</div>
     }
 
     const addLike = async (blogAdd) => {
@@ -71,48 +51,17 @@ const Blog = ({ blog, isOwner }) => {
         }
     }
 
-    const handleDelete = () => {
-        console.log(blog)
-        if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-            deleteBlog(blog.id.toString())
-        }
-    }
-    if (!displayed) {
-        return (
-            <div style={blogStyle}>
-                <div data-testid="blog-simple" data="blog">
-                    {blog.title} {blog.author}{' '}
-                    <button data-testid="show" onClick={() => setDisplay(true)}>
-                        view
-                    </button>
-                </div>
-            </div>
-        )
-    } else {
-        return (
-            <div style={blogStyle}>
-                <div data-testid="blog-detail" data="blog">
-                    {blog.title}{' '}
-                    <button onClick={() => setDisplay(false)}>hide</button>
-                    <br></br>
-                    {blog.url}
-                    <br></br>
-                    likes {blog.likes}{' '}
-                    <button data-testid="like" onClick={() => addLike(blog)}>
-                        like
-                    </button>
-                    <br></br>
-                    {blog.author}
-                    <br></br>
-                    {isOwner && (
-                        <button onClick={handleDelete} id="remove">
-                            remove
-                        </button>
-                    )}
-                </div>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <h2>{blog.title}</h2>
+            <a href={blog.url}>{blog.url}</a>
+            <br></br>
+            {blog.likes} likes{' '}
+            <button onClick={() => addLike(blog)}>like</button>
+            <br></br>
+            added by {blog.author}
+        </div>
+    )
 }
 
 export default Blog

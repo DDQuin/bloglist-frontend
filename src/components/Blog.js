@@ -60,6 +60,12 @@ const Blog = ({ blogs }) => {
             <button onClick={() => addLike(blog)}>like</button>
             <br></br>
             added by {blog.author}
+            <h3>comments</h3>
+            <ul>
+                {blog.comments.map((comment) => (
+                    <li>{comment}</li>
+                ))}
+            </ul>
         </div>
     )
 }

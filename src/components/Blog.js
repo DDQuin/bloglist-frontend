@@ -13,6 +13,7 @@ import {
     initializeBlogs,
     likeBlog,
     deleteBlogBack,
+    commentBlog,
 } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
@@ -61,11 +62,60 @@ const Blog = ({ blogs }) => {
             <br></br>
             added by {blog.author}
             <h3>comments</h3>
+            <CommentAdder blog={blog} />
             <ul>
                 {blog.comments.map((comment) => (
                     <li>{comment}</li>
                 ))}
             </ul>
+        </div>
+    )
+}
+
+const CommentAdder = ({ blog }) => {
+    const dispatch = useDispatch()
+    const [newComment, setNewComment] = useState('')
+
+    const handleCommentChange = (event) => {
+        setNewComment(event.target.value)
+    }
+
+    const addComment = async (event) => {
+        event.preventDefault()
+
+        try {
+            const id = blog.id.toString()
+            dispatch(commentBlog(id, blog, newComment))
+            dispatch(
+                setNotification(
+                    {
+                        message: `commented ${blog.title} `,
+                        type: 'success',
+                    },
+                    5
+                )
+            )
+            setNewComment('')
+        } catch (exception) {
+            console.log(exception)
+            dispatch(
+                setNotification(
+                    {
+                        message: `${exception.response.data.error}`,
+                        type: 'error',
+                    },
+                    5
+                )
+            )
+        }
+    }
+
+    return (
+        <div>
+            <form onSubmit={addComment}>
+                <input value={newComment} onChange={handleCommentChange} />
+                <button type="submit">add comment</button>
+            </form>
         </div>
     )
 }

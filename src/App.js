@@ -22,6 +22,7 @@ import {
 import BlogList from './components/BlogList'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { initializeUsers } from './reducers/usersReducer'
+import { Table, Form, Button, Alert, Navbar, Nav } from 'react-bootstrap'
 
 const App = () => {
     const dispatch = useDispatch()
@@ -36,16 +37,17 @@ const App = () => {
 
     if (!user)
         return (
-            <div>
+            <div className="container">
                 <Notification />
                 <LoginForm />
             </div>
         )
 
     return (
-        <div>
+        <div className="container">
             <Notification />
             <NavigationBar user={user} />
+            <h2>Blog App</h2>
             <Routes>
                 <Route
                     path="/"
@@ -61,6 +63,9 @@ const App = () => {
 
 const NavigationBar = ({ user }) => {
     const dispatch = useDispatch()
+    const padding = {
+        padding: 5,
+    }
     const navStyle = {
         paddingTop: 10,
         paddingLeft: 2,
@@ -68,17 +73,33 @@ const NavigationBar = ({ user }) => {
         borderWidth: 1,
         marginBottom: 5,
     }
+    const logoutStyle = {
+        color: 'aqua',
+    }
     return (
-        <div>
-            <div style={navStyle}>
-                <Link to={`/`}>blogs</Link> <Link to={`/users/`}>users</Link>{' '}
-                {user.name} logged-in{' '}
-                <button onClick={() => dispatch(logoutUserBack())}>
-                    logout
-                </button>
-            </div>
-            <h2>blogs</h2>
-        </div>
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="me-auto">
+                    <Nav.Link href="#" as="span">
+                        <Link style={padding} to="/">
+                            blogs
+                        </Link>
+                    </Nav.Link>
+                    <Nav.Link href="#" as="span">
+                        <Link style={padding} to="/users">
+                            users
+                        </Link>
+                    </Nav.Link>
+                    <div style={logoutStyle}>
+                        {user.name} logged-in{' '}
+                        <Button onClick={() => dispatch(logoutUserBack())}>
+                            logout
+                        </Button>
+                    </div>
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
     )
 }
 

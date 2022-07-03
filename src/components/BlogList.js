@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createBlog, deleteBlogBack } from '../reducers/blogReducer'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Table, Button } from 'react-bootstrap'
 
 const BlogList = ({ blogs, user }) => {
     const dispatch = useDispatch()
@@ -48,14 +49,23 @@ const BlogList = ({ blogs, user }) => {
                     <BlogForm createBlog={addBlog} />
                 </Togglable>
             }
-            {sortedBlogs.map((blog) => (
-                <BlogLink
-                    key={blog.id}
-                    blog={blog}
-                    isOwner={user && blog.user.username === user.username}
-                    user={user}
-                />
-            ))}
+            <Table striped>
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                    </tr>
+                    {sortedBlogs.map((blog) => (
+                        <BlogLink
+                            key={blog.id}
+                            blog={blog}
+                            isOwner={
+                                user && blog.user.username === user.username
+                            }
+                            user={user}
+                        />
+                    ))}
+                </tbody>
+            </Table>
         </div>
     )
 }
@@ -100,14 +110,20 @@ const BlogLink = ({ blog, isOwner }) => {
         }
     }
     return (
-        <div style={blogStyle}>
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>{' '}
-            {isOwner && (
-                <button onClick={() => handleDelete(blog)} id="remove">
-                    remove
-                </button>
-            )}
-        </div>
+        <tr>
+            <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>{' '}
+                {isOwner && (
+                    <Button
+                        variant="danger"
+                        onClick={() => handleDelete(blog)}
+                        id="remove"
+                    >
+                        remove
+                    </Button>
+                )}
+            </td>
+        </tr>
     )
 }
 

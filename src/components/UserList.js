@@ -1,18 +1,31 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
-const UserList = (users) => {
+const UserList = ({ users }) => {
     if (!users) {
         return <div>something went wrong</div>
     }
     return (
         <div>
             <h2>Users</h2>
-            {users.users.map((user) => (
-                <div key={user.id}>
-                    <Link to={`/users/${user.id}`}>{user.name}</Link>{' '}
-                    {user.blogs.length}
-                </div>
-            ))}
+            <Table striped>
+                <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <th>Number of blogs</th>
+                    </tr>
+                    {users.map((user) => (
+                        <tr key={user.id}>
+                            <td>
+                                <Link to={`/users/${user.id}`}>
+                                    {user.name}
+                                </Link>
+                            </td>
+                            <td>{user.blogs.length}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
         </div>
     )
 }

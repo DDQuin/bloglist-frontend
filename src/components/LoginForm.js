@@ -6,6 +6,7 @@ import {
     loginUser,
     logoutUserBack,
 } from '../reducers/userReducer'
+import { Table, Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
     const [username, setUsername] = useState('')
@@ -40,32 +41,34 @@ const LoginForm = () => {
     }
 
     return (
-        <form onSubmit={loginUserE}>
+        <Form onSubmit={loginUserE}>
             <h2>log in application</h2>
-            <div>
-                username
-                <input
-                    type="text"
-                    value={username}
-                    name="Username"
-                    onChange={({ target }) => setUsername(target.value)}
-                    id="username"
-                />
-            </div>
-            <div>
-                password
-                <input
-                    type="password"
-                    value={password}
-                    name="Password"
-                    onChange={({ target }) => setPassword(target.value)}
-                    id="password"
-                />
-            </div>
-            <button type="submit" id="login-button">
-                login
-            </button>
-        </form>
+            <Form.Group>
+                <div>
+                    <Form.Label>Username:</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={username}
+                        name="Username"
+                        onChange={({ target }) => setUsername(target.value)}
+                        id="username"
+                    />
+                </div>
+                <div>
+                    <Form.Label>Password:</Form.Label>
+                    <Form.Control
+                        type="password"
+                        value={password}
+                        name="Password"
+                        onChange={({ target }) => setPassword(target.value)}
+                        id="password"
+                    />
+                </div>
+                <Button variant="primary" type="submit" id="login-button">
+                    login
+                </Button>
+            </Form.Group>
+        </Form>
     )
 }
 

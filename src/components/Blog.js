@@ -16,6 +16,7 @@ import {
     commentBlog,
 } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Table, Form, Button } from 'react-bootstrap'
 
 const Blog = ({ blogs }) => {
     const dispatch = useDispatch()
@@ -58,7 +59,7 @@ const Blog = ({ blogs }) => {
             <a href={blog.url}>{blog.url}</a>
             <br></br>
             {blog.likes} likes{' '}
-            <button onClick={() => addLike(blog)}>like</button>
+            <Button onClick={() => addLike(blog)}>like</Button>
             <br></br>
             added by {blog.author}
             <h3>comments</h3>
@@ -112,10 +113,15 @@ const CommentAdder = ({ blog }) => {
 
     return (
         <div>
-            <form onSubmit={addComment}>
-                <input value={newComment} onChange={handleCommentChange} />
-                <button type="submit">add comment</button>
-            </form>
+            <Form onSubmit={addComment}>
+                <Form.Group>
+                    <Form.Control
+                        value={newComment}
+                        onChange={handleCommentChange}
+                    />
+                    <Button type="submit">add comment</Button>
+                </Form.Group>
+            </Form>
         </div>
     )
 }
